@@ -3,7 +3,6 @@
     "type": "neos-package",
     "name": "theme/cssvariables",
     "version": "0.1.0",
-    "license": ["MIT"],
     "require": {
         "neos/flow": "*",
         "neos/neos": "*",
