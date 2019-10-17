@@ -93,7 +93,7 @@ class ReadCSsVariablesService
      * @param SplFileInfo $file
      * @return array
      */
-    private function readVariables($file)
+    public function readVariables($file)
     {
         $variables = [];
 
@@ -111,6 +111,30 @@ class ReadCSsVariablesService
                             'value' => $exploded[1],
                             'type' => $this->getVariableType($exploded)
                         ];
+                    }
+                }
+            }
+        }
+        return $variables;
+    }
+
+    /**
+     * @param SplFileInfo $file
+     * @return array
+     */
+    public function readSimplifiedVariables($file)
+    {
+        $variables = [];
+
+        preg_match('/(:root\s?\{(\s*?.*?)*?\})/', $file->getContents(), $matches);
+        if (!empty($matches)) {
+            foreach ($matches as $match) {
+                $match = preg_replace('/:root{/', '', $match);
+                $match = preg_replace('/}/', '', $match);
+                foreach (explode(';', $match) as $variable) {
+                    $exploded = explode(':', $variable);
+                    if (isset($exploded[1])) {
+                        $variables[$exploded[0]] = $exploded[1];
                     }
                 }
             }

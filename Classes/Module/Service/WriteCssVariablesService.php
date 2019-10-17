@@ -68,7 +68,7 @@ class WriteCssVariablesService
      * @param array $variables
      * @return string
      */
-    private function processVariables(array $variables)
+    public function processVariables(array $variables)
     {
         $processedVariables = [];
         foreach ($variables as $variableName => $variableValue) {
