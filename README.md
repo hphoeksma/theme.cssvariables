@@ -48,6 +48,13 @@ composer require theme/cssvariables
 Default the newly created CSS-file is placed with `@position = 'after stylesheets'`. 
 If your Neos Page setup is different, make sure the file is loaded after your Site's css files.
 
+### Access to the module
+Our default policy is set for `Neos Administrators` only. However feel free to copy-paste the 
+contents to your site package Policy.yaml and change it to whatever role you deem necessary.
+
+Please be aware of one thing though: if more then one user can change the variables they need not be surprised
+when some of the other users might pick a color they think is 💩!
+
 ## FAQ
 
 ### My css doesn't use CSS custom properties, can I still use this package?
