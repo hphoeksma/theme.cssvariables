@@ -1,0 +1,21 @@
+Neos:
+  Neos:
+    modules:
+      management:
+        submodules:
+          themeCssVariables:
+            label: 'Theme Css Variable'
+            controller: 'Theme\CssVariables\Module\Controller\BackendController'
+            description: 'Manage the colors of your theme by overriding the css variables'
+            icon: 'fas fa-palette'
+            additionalResources:
+              styleSheets:
+                - 'resource://Theme.CssVariables/Public/main.css'
+              javaScripts:
+                - 'resource://Theme.CssVariables/Public/main.js'
+    fusion:
+      autoInclude:
+        Theme.CssVariables: true
+Theme:
+  CssVariables:
+    stylesheetName: 'custom.css'

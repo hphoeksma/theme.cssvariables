@@ -1,0 +1,21 @@
+{
+    "description": "",
+    "type": "neos-package",
+    "name": "theme/cssvariables",
+    "version": "0.1.0",
+    "require": {
+        "neos/flow": "*",
+        "neos/neos": "*",
+        "symfony/finder": "^4.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Theme\\CssVariables\\": "Classes/"
+        }
+    },
+    "extra": {
+        "neos": {
+            "package-key": "Theme.CssVariables"
+        }
+    }
+}

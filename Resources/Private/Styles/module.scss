@@ -1,0 +1,95 @@
+.neos.neos-module.neos-module-management-themeCssVariables {
+    h2 {
+    }
+
+    legend {
+        padding: 0;
+        margin: 0;
+        width: auto;
+    }
+
+    [class*='ColorPicker'] {
+        color: #555555;
+
+        input,
+        [class*='ColorPicker'] input:focus {
+            border-width: 1px;
+            border-color: #777777;
+            background-color: transparent;
+            color: #555555;
+            padding: inherit;
+        }
+    }
+
+    .theme-cssvariables {
+        &__form-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            background: black;
+            padding: 1rem;
+            margin: 1rem 0;
+
+            .neos-buttons {
+                margin-left: auto;
+
+                .neos-button {
+                    margin-left: 1rem;
+                }
+            }
+        }
+
+        &__help {
+            flex-basis: 100%;
+            font-size: small;
+            padding: 1rem 0;
+
+            i {
+                color: #00b5ff;
+            }
+        }
+
+        &__variables--type {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+            grid-gap: 1px;
+            margin: 1rem 0;
+            //border-top: 1px solid #0d95e8;
+            //background: #1d75b3;
+            > * {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background: #000000;
+                padding: 1rem;
+            }
+        }
+
+        .react__placeholder--color-picker {
+            display: flex;
+            align-items: center;
+
+            > * {
+                margin-left: .5rem;
+            }
+
+            .color-picker {
+                &__original, &__new {
+                    width: 1rem;
+                    height: 1rem;
+                    border-radius: 50%;
+                    display: block;
+                    box-shadow: 0 0 5px white;
+                }
+
+                &__new {
+                    border: 1px solid #0d95e8;
+                }
+            }
+        }
+
+    }
+}
+
+

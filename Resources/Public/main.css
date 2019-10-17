@@ -1,0 +1,63 @@
+.neos.neos-module.neos-module-management-themeCssVariables legend {
+  padding: 0;
+  margin: 0;
+  width: auto; }
+
+.neos.neos-module.neos-module-management-themeCssVariables [class*='ColorPicker'] {
+  color: #555555; }
+  .neos.neos-module.neos-module-management-themeCssVariables [class*='ColorPicker'] input,
+  .neos.neos-module.neos-module-management-themeCssVariables [class*='ColorPicker'] [class*='ColorPicker'] input:focus {
+    border-width: 1px;
+    border-color: #777777;
+    background-color: transparent;
+    color: #555555;
+    padding: inherit; }
+
+.neos.neos-module.neos-module-management-themeCssVariables .theme-cssvariables__form-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  background: black;
+  padding: 1rem;
+  margin: 1rem 0; }
+  .neos.neos-module.neos-module-management-themeCssVariables .theme-cssvariables__form-header .neos-buttons {
+    margin-left: auto; }
+    .neos.neos-module.neos-module-management-themeCssVariables .theme-cssvariables__form-header .neos-buttons .neos-button {
+      margin-left: 1rem; }
+
+.neos.neos-module.neos-module-management-themeCssVariables .theme-cssvariables__help {
+  flex-basis: 100%;
+  font-size: small;
+  padding: 1rem 0; }
+  .neos.neos-module.neos-module-management-themeCssVariables .theme-cssvariables__help i {
+    color: #00b5ff; }
+
+.neos.neos-module.neos-module-management-themeCssVariables .theme-cssvariables__variables--type {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  grid-gap: 1px;
+  margin: 1rem 0; }
+  .neos.neos-module.neos-module-management-themeCssVariables .theme-cssvariables__variables--type > * {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #000000;
+    padding: 1rem; }
+
+.neos.neos-module.neos-module-management-themeCssVariables .theme-cssvariables .react__placeholder--color-picker {
+  display: flex;
+  align-items: center; }
+  .neos.neos-module.neos-module-management-themeCssVariables .theme-cssvariables .react__placeholder--color-picker > * {
+    margin-left: .5rem; }
+  .neos.neos-module.neos-module-management-themeCssVariables .theme-cssvariables .react__placeholder--color-picker .color-picker__original, .neos.neos-module.neos-module-management-themeCssVariables .theme-cssvariables .react__placeholder--color-picker .color-picker__new {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    display: block;
+    box-shadow: 0 0 5px white; }
+  .neos.neos-module.neos-module-management-themeCssVariables .theme-cssvariables .react__placeholder--color-picker .color-picker__new {
+    border: 1px solid #0d95e8; }
+
+
+/*# sourceMappingURL=main.css.map*/

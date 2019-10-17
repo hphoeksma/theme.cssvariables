@@ -1,0 +1,11 @@
+prototype(Neos.Neos:Page) {
+    head {
+        cssVariables =  Neos.Fusion:Component {
+            uri = Neos.Fusion:ResourceUri {
+                path = ${'resource://Theme.CssVariables/Public/' + Configuration.setting('Theme.CssVariables.stylesheetName')}
+            }
+            renderer = afx`<link rel="stylesheet" href={props.uri} />`
+            @position = 'after stylesheets'
+        }
+    }
+}

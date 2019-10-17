@@ -1,0 +1,11 @@
+privilegeTargets:
+  'Neos\Neos\Security\Authorization\Privilege\ModulePrivilege':
+    'Theme.CssVariables:BackendModule':
+      matcher: 'management/themeCssVariables'
+
+roles:
+  'Neos.Neos:Administrator':
+    privileges:
+      -
+        privilegeTarget: 'Theme.CssVariables:BackendModule'
+        permission: GRANT
