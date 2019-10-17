@@ -39,10 +39,10 @@ composer require theme/cssvariables
 ## Configuration
 
 ### Settings
-| Setting  | Default value  | Explanation  |
-|---|---|---|
-|  stylesheetName | `custom.css`  | The name of the file to be generated.  |
-|  types | `- color`  | Supported are: `color`,`font`,`breakpoint`,`other`. Where `other` means every variable we could not sensibly map to one of the others. |
+| Setting  | Type | Default value  | Explanation  |
+|---|---|---|---|
+|  stylesheetName | `string` | `custom.css`  | The name of the file to be generated.  |
+|  types | `array` | `color` | Supported are: `color`,`font`,`breakpoint`,`other`. Where `other` means every variable we could not sensibly map to one of the others. |
 
 ### Fusion
 Default the newly created CSS-file is placed with `@position = 'after stylesheets'`. 
