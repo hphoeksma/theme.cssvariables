@@ -16,6 +16,16 @@ Neos:
     fusion:
       autoInclude:
         Theme.CssVariables: true
+
 Theme:
   CssVariables:
+    # You can choose whatever name you like, but make sure it ends with .css
     stylesheetName: 'custom.css'
+    # Array of types that are allowed in the backend module
+    # Please be aware that breakpoints can be extremely dangerous when not using the CSS custom property
+    # consistently
+    types:
+      - color
+#      - font
+#      - breakpoints
+#      - other

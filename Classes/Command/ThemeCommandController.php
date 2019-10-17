@@ -35,41 +35,46 @@ class ThemeCommandController extends CommandController
         $finder = new Finder();
         $finder->files()->in(FLOW_PATH_ROOT)->path($cssFile);
 
-        // We have to loop through but only change one file!
-        if ($finder->hasResults()) {
-            /** @var SplFileInfo $file */
-            foreach ($finder->files() as $file) {
-                $fileContent = $file->getContents();
-                $fileContentWithoutVariables = preg_replace('/(:root\s?\{(\s*?.*?)*?\})/', '', $fileContent);
-                $newFileContent = $fileContentWithoutVariables;
-                $variables = $this->readCssVariableService->readVariables($file);
+        $continue = $this->output->askConfirmation('This feature is expirimental, are you sure you wish to continue? ');
 
-                // What to do?
-                // 1. Match the content on the variable value
-                // 2. Update the content with the variable name
-                // 3. Store the updated content in the file
+        if ($continue) {
+            // We have to loop through but only change one file!
+            if ($finder->hasResults()) {
+                /** @var SplFileInfo $file */
+                foreach ($finder->files() as $file) {
+                    $fileContent = $file->getContents();
+                    $fileContentWithoutVariables = preg_replace('/(:root\s?\{(\s*?.*?)*?\})/', '', $fileContent);
+                    $newFileContent = $fileContentWithoutVariables;
+                    $variables = $this->readCssVariableService->readVariables($file);
 
-                foreach ($variables as $variable) {
-                    if ($variable['type'] === 'color') {
-                        preg_match('/(' . $variable['value'] . ')/i', $fileContent, $variableMatches);
-                        if (!empty($variableMatches)) {
-                            foreach ($variableMatches as $variableMatch) {
-                                if ($variableMatch !== '0') {
-                                    $newFileContent = preg_replace('/' . $variableMatch . '/i', 'var(' . $variable['name'] . ')', $newFileContent);
+                    // What to do?
+                    // 1. Match the content on the variable value
+                    // 2. Update the content with the variable name
+                    // 3. Store the updated content in the file
+
+                    foreach ($variables as $variable) {
+                        if ($variable['type'] === 'color') {
+                            preg_match('/(' . $variable['value'] . ')/i', $fileContent, $variableMatches);
+                            if (!empty($variableMatches)) {
+                                foreach ($variableMatches as $variableMatch) {
+                                    if ($variableMatch !== '0') {
+                                        $newFileContent = preg_replace('/' . $variableMatch . '/i', 'var(' . $variable['name'] . ')', $newFileContent);
+                                    }
                                 }
                             }
                         }
                     }
+                    $fileContentToWrite = ':root{' . $this->writeCssVariableService->processVariables($this->readCssVariableService->readSimplifiedVariables($file)) . '}' . $newFileContent;
+
+                    // Copy original
+                    file_put_contents($cssFile . '_bup', $fileContent);
+                    file_put_contents($cssFile, $fileContentToWrite);
+                    $this->output->outputLine('All done! Make sure to check if the result is according to your needs!');
+                    $this->outputLine('A backup file has been created for you.');
                 }
-                $fileContentToWrite = ':root{' . $this->writeCssVariableService->processVariables($this->readCssVariableService->readSimplifiedVariables($file)) . '}' . $newFileContent;
-
-                // Copy original
-                file_put_contents('_bup' . $cssFile, $fileContent);
-                file_put_contents($cssFile, $fileContentToWrite);
-                $this->output->outputLine('All done! Make sure to check if the result is according to your needs!');
-                $this->outputLine('A backup file has been created for you.');
             }
+        } else {
+            $this->outputLine('Okay, aborting...');
         }
-
     }
 }

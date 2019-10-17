@@ -17,26 +17,31 @@
 
         <div class="theme-cssvariables__variables">
             <f:groupedFor each="{file.variables}" as="variablesByType" groupBy="type" groupKey="type">
-                <h2>{type -> f:format.case(mode:'capital')} variables</h2>
-                <div class="theme-cssvariables__variables--type">
-                    <f:for each="{variablesByType}" as="variable">
-                        <div class="theme-cssvariables__variable">
-                            <label for="{variable.name}">{variable.simple_name -> f:format.case(mode:'capital')}</label>
-                            <f:if condition="{variable.type} == 'color'">
-                                <f:then>
-                                    <f:form.hidden id="{variable.name}" name="variables[{variable.name}]"
-                                                   value="{variable.value}"/>
-                                    <div class="react__placeholder--color-picker" data-color="{variable.value}"
-                                         data-target="#{variable.name}"></div>
-                                </f:then>
-                                <f:else>
-                                    <f:form.textfield id="{variable.name}" name="variables[{variable.name}]"
-                                                      value="{variable.value}"/>
-                                </f:else>
-                            </f:if>
+                <f:for each="{settings.types}" as="allowedType">
+                    <f:if condition="{allowedType} == {type}">
+                        <h2>{type -> f:format.case(mode:'capital')} variables</h2>
+                        <div class="theme-cssvariables__variables--type">
+                            <f:for each="{variablesByType}" as="variable">
+                                <div class="theme-cssvariables__variable">
+                                    <label for="{variable.name}">{variable.simple_name -> f:format.case(mode:'capital')}</label>
+                                    <f:if condition="{variable.type} == 'color'">
+                                        <f:then>
+                                            <f:form.hidden id="{variable.name}" name="variables[{variable.name}]"
+                                                           value="{variable.value}"/>
+                                            <div class="react__placeholder--color-picker" data-color="{variable.value}"
+                                                 data-target="#{variable.name}"></div>
+                                        </f:then>
+                                        <f:else>
+                                            <f:form.textfield id="{variable.name}" name="variables[{variable.name}]"
+                                                              value="{variable.value}"/>
+                                        </f:else>
+                                    </f:if>
+                                </div>
+                            </f:for>
                         </div>
-                    </f:for>
-                </div>
+                    </f:if>
+                </f:for>
+
             </f:groupedFor>
         </div>
     </f:form>
