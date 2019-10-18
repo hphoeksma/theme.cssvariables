@@ -2,7 +2,6 @@
     "description": "",
     "type": "neos-package",
     "name": "theme/cssvariables",
-    "version": "0.1.0",
     "require": {
         "neos/flow": "*",
         "neos/neos": "*",
