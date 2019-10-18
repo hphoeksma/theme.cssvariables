@@ -1,7 +1,8 @@
 {
-    "description": "",
+    "description": "Provide an option to overwrite CSS Variables from within Neos",
     "type": "neos-package",
     "name": "theme/cssvariables",
+    "license": "MIT",
     "require": {
         "neos/flow": "*",
         "neos/neos": "*",
