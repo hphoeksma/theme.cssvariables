@@ -5,6 +5,7 @@ namespace Theme\CssVariables\Module\Controller;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Mvc\Controller\ActionController;
 use Neos\Flow\Mvc\Exception\StopActionException;
+use Neos\Flow\Package\PackageManager;
 use Neos\Neos\Domain\Exception;
 use Neos\Utility\Exception\FilesException;
 use Theme\CssVariables\Service\ReadCSsVariablesService;
@@ -31,13 +32,19 @@ class BackendController extends ActionController
     protected $writeCssVariablesService;
 
     /**
+     * @Flow\Inject
+     * @var PackageManager
+     */
+    protected $packageManager;
+
+    /**
      *
      * @throws Exception
      */
     public function indexAction()
     {
         $this->view->assign('header', 'Theme / CSS Variables');
-        $this->view->assign('file', $this->readVariablesService->readCssVariables());
+        $this->view->assign('result', $this->readVariablesService->readCssVariables());
     }
 
     /**

@@ -47,7 +47,12 @@
 
             i {
                 color: #00b5ff;
+
+                &.fa-exclamation-triangle {
+                    color: #ff8700;
+                }
             }
+
         }
 
         &__variables--type {

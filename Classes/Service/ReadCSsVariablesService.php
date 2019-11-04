@@ -3,6 +3,8 @@
 namespace Theme\CssVariables\Service;
 
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Package;
+use Neos\Flow\Package\PackageManager;
 use Neos\Neos\Domain\Exception;
 use Neos\Neos\Domain\Repository\SiteRepository;
 use Neos\Utility\Arrays;
@@ -12,8 +14,6 @@ use Symfony\Component\Finder\SplFileInfo;
 /**
  * Class ReadCSsVariablesService
  * @package Theme\CssVariables\Module\Service
- *
- * Todo: merge files and variables
  */
 class ReadCSsVariablesService
 {
@@ -25,27 +25,39 @@ class ReadCSsVariablesService
 
     /**
      * @Flow\Inject
-     * @var SiteRepository
+     * @var PackageManager
      */
-    protected $siteRepository;
+    protected $packageManager;
 
     /**
      * @return array
-     * @throws Exception
      */
     public function readCssVariables()
     {
+        $result = [];
         // Load the override values
         $files = $this->getCustomCssVariables();
 
         $finder = new Finder();
-        $currentSite = $this->siteRepository->findDefault();
+        $packages = $this->filteredPackages();
+
+        if (empty($packages)) {
+            $result['error'] = 'No packages found to read variables from.';
+            return $result;
+        }
 
         $finder->files()
-            ->in(FLOW_PATH_WEB . '_Resources/Static/Packages/' . $currentSite->getSiteResourcesPackageKey() . '/**/*')
             ->name('*.css')
             ->contains('--')
             ->followLinks();
+
+        /** @var Package $package */
+        foreach ($packages as $package) {
+            if (is_dir($package->getResourcesPath())) {
+                $finder->in($package->getResourcesPath());
+            }
+        }
+
         if ($finder->hasResults()) {
             foreach ($finder as $file) {
                 if (!empty($this->readVariables($file))) {
@@ -58,12 +70,14 @@ class ReadCSsVariablesService
             }
         }
 
-        $returnValues = [];
+        $result['cssfile'] = [];
         foreach (array_reverse($files) as $file) {
-            $returnValues = Arrays::arrayMergeRecursiveOverrule($returnValues, $file);
+            $result['cssfile'] = Arrays::arrayMergeRecursiveOverrule($result['cssfile'], $file);
         }
 
-        return $returnValues;
+        if (empty($result['cssfile'])) $result['error'] = 'No css variables found';
+
+        return $result;
 
     }
 
@@ -104,10 +118,10 @@ class ReadCSsVariablesService
                 $match = preg_replace('/}/', '', $match);
                 foreach (explode(';', $match) as $variable) {
                     $exploded = explode(':', $variable);
-                    if (isset($exploded[1])) {
-                        $variables[$exploded[0]] = [
-                            'name' => $exploded[0],
-                            'simple_name' => str_replace('--', '', $exploded[0]),
+                    if (isset($exploded[1]) && trim($exploded[0] !== '')) {
+                        $variables[trim($exploded[0])] = [
+                            'name' => trim($exploded[0]),
+                            'simple_name' => str_replace('--', '', trim($exploded[0])),
                             'value' => $exploded[1],
                             'type' => $this->getVariableType($exploded)
                         ];
@@ -161,5 +175,23 @@ class ReadCSsVariablesService
         }
 
         return $files;
+    }
+
+    /**
+     * Get all Site or Theme packages
+     *
+     * @return array
+     */
+    private function filteredPackages()
+    {
+        $availablePackages = $this->packageManager->getFlowPackages();
+        $filteredPackages = [];
+        foreach ($availablePackages as $package) {
+            if (substr($package->getPackageKey(), 0 , 5) === 'Theme' || substr($package->getPackageKey(), 0 , 4) === 'Site') {
+                $filteredPackages[] = $package;
+            }
+        }
+
+        return $filteredPackages;
     }
 }
