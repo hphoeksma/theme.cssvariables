@@ -1,6 +1,6 @@
 <?php
 
-namespace Theme\CssVariables\Module\Service;
+namespace Theme\CssVariables\Service;
 
 use Neos\Flow\Annotations as Flow;
 use Neos\Neos\Domain\Exception;

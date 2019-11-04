@@ -7,8 +7,8 @@ use Neos\Flow\Mvc\Controller\ActionController;
 use Neos\Flow\Mvc\Exception\StopActionException;
 use Neos\Neos\Domain\Exception;
 use Neos\Utility\Exception\FilesException;
-use Theme\CssVariables\Module\Service\ReadCSsVariablesService;
-use Theme\CssVariables\Module\Service\WriteCssVariablesService;
+use Theme\CssVariables\Service\ReadCSsVariablesService;
+use Theme\CssVariables\Service\WriteCssVariablesService;
 
 
 /**

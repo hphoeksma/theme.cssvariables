@@ -6,8 +6,8 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Cli\CommandController;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
-use Theme\CssVariables\Module\Service\ReadCSsVariablesService;
-use Theme\CssVariables\Module\Service\WriteCssVariablesService;
+use Theme\CssVariables\Service\ReadCSsVariablesService;
+use Theme\CssVariables\Service\WriteCssVariablesService;
 
 class ThemeCommandController extends CommandController
 {
