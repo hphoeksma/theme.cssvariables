@@ -83,17 +83,6 @@ class WriteCssVariablesService
      */
     public function cleanCustomCss()
     {
-        // Remove the stored variables
-        $persistentPathAndFilename = Files::concatenatePaths([
-            FLOW_PATH_DATA,
-            'Persistent',
-            'Theme',
-            'CssVariables',
-            $this->stylesheetName
-        ]);
-
-        Files::unlink($persistentPathAndFilename);
-
         // Remove the symlink
         $publicPathAndFilename = Files::concatenatePaths([
             FLOW_PATH_WEB,
@@ -104,8 +93,17 @@ class WriteCssVariablesService
             $this->stylesheetName
         ]);
 
-        if (!Files::is_link($publicPathAndFilename)) {
-            Files::unlink($publicPathAndFilename);
-        }
+        Files::unlink($publicPathAndFilename);
+
+        // Remove the stored variables
+        $persistentPathAndFilename = Files::concatenatePaths([
+            FLOW_PATH_DATA,
+            'Persistent',
+            'Theme',
+            'CssVariables',
+            $this->stylesheetName
+        ]);
+
+        Files::unlink($persistentPathAndFilename);
     }
 }

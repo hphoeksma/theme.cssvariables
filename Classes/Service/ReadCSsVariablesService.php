@@ -8,6 +8,7 @@ use Neos\Flow\Package\PackageManager;
 use Neos\Neos\Domain\Exception;
 use Neos\Neos\Domain\Repository\SiteRepository;
 use Neos\Utility\Arrays;
+use Neos\Utility\Files;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -24,10 +25,22 @@ class ReadCSsVariablesService
     protected $stylesheetName;
 
     /**
+     * @Flow\InjectConfiguration("excludedPackages")
+     * @var array
+     */
+    protected $excludedPackages;
+
+    /**
      * @Flow\Inject
      * @var PackageManager
      */
     protected $packageManager;
+
+    /**
+     * @var SiteRepository
+     * @Flow\Inject
+     */
+    protected SiteRepository $siteRepository;
 
     /**
      * @return array
@@ -60,13 +73,12 @@ class ReadCSsVariablesService
 
         if ($finder->hasResults()) {
             foreach ($finder as $file) {
-                if (!empty($this->readVariables($file))) {
+                if (!empty($this->readVariables($file)) && !str_starts_with($file->getRelativePathname(), 'Private')) {
                     $files[] = [
-                        'name' => $file->getRelativePathname(),
+                        'name' => $file->getFilename(),
                         'variables' => $this->readVariables($file)
                     ];
                 }
-
             }
         }
 
@@ -123,7 +135,9 @@ class ReadCSsVariablesService
                             'name' => trim($exploded[0]),
                             'simple_name' => str_replace('--', '', trim($exploded[0])),
                             'value' => $exploded[1],
-                            'type' => $this->getVariableType($exploded)
+                            'type' => $this->getVariableType($exploded),
+                            'packageKey'=> $this->getPackageKeyByFile($file),
+                            'fileName' => $file->getFilename()
                         ];
                     }
                 }
@@ -160,9 +174,13 @@ class ReadCSsVariablesService
      * @return array
      */
     private function getCustomCssVariables() {
+        $customCssDirectory = FLOW_PATH_DATA . 'Persistent/Theme/CssVariables';
+        if (!is_dir($customCssDirectory)) {
+            Files::createDirectoryRecursively($customCssDirectory);
+        }
         $files = [];
         $customCss = new Finder();
-        $customCss->files()->in(FLOW_PATH_DATA . 'Persistent/Theme/CssVariables')->name($this->stylesheetName)->followLinks();
+        $customCss->files()->in($customCssDirectory)->name($this->stylesheetName)->followLinks();
         if ($customCss->hasResults()) {
             foreach ($customCss as $file) {
                 if (!empty($this->readVariables($file))) {
@@ -187,11 +205,22 @@ class ReadCSsVariablesService
         $availablePackages = $this->packageManager->getFlowPackages();
         $filteredPackages = [];
         foreach ($availablePackages as $package) {
-            if (substr($package->getPackageKey(), 0 , 5) === 'Theme' || substr($package->getPackageKey(), 0 , 4) === 'Site') {
+            if (!array_filter($this->excludedPackages, fn($prefix) => str_starts_with($package->getPackageKey(), $prefix))) {
                 $filteredPackages[] = $package;
             }
         }
 
         return $filteredPackages;
+    }
+
+    private function getPackageKeyByFile(SplFileInfo $file): ?string
+    {
+        $packageKey = null;
+
+        if (preg_match('#/Packages/Application/([^/]+)/#', $file->getRealPath(), $matches)) {
+            $packageKey = $matches[1];
+        }
+
+        return $packageKey ?: $this->siteRepository->findFirstOnline()->getSiteResourcesPackageKey();
     }
 }

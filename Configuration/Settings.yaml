@@ -29,3 +29,6 @@ Theme:
 #      - font
 #      - breakpoints
 #      - other
+    excludedPackages:
+      - Neos
+      - Yoast

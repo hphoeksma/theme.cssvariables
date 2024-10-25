@@ -1,58 +1,62 @@
 {namespace neos=Neos\Neos\ViewHelpers}
-<div class="neos-content neos-container-fluid theme-cssvariables">
-    <h1>{header}</h1>
-    <f:form action="save" class="theme-cssvariables__form" name="variables" method="post">
-        <div class="theme-cssvariables__form-header">
-            <legend>Theme Variables</legend>
-            <div class="neos-buttons">
-                <f:if condition="{result.cssfile.name} == {settings.stylesheetName} ">
-                    <f:link.action action="restore" class="neos-button neos-button-warning" title="Restore original values">Restore</f:link.action>
-                </f:if>
-                <f:if condition="{result.cssfile}">
-                    <f:form.submit value="Save" class="neos-button neos-button-primary"/>
-                </f:if>
-            </div>
-            <div class="theme-cssvariables__help">
-                <f:if condition="{result.error}">
-                    <f:then>
-                        <p><i class="fas fa-exclamation-triangle"></i> {result.error}</p>
-                    </f:then>
-                    <f:else>
-                        <p><i class="fas fa-info"></i> Below you find the active variables in your site. If you have made changes to the original values, a restore option will show up next to the save button.</p>
-                    </f:else>
-                </f:if>
-            </div>
-        </div>
+<div class="neos-content neos-container-fluid theme-cssvariables" xmlns="http://www.w3.org/1999/html">
+	<h1>{header}</h1>
+	<f:form action="save" class="theme-cssvariables__form" name="variables" method="post">
+		<div class="theme-cssvariables__form-header">
+			<legend>Theme Variables</legend>
+			<div class="neos-buttons">
+				<f:if condition="{result.cssfile.name} == {settings.stylesheetName} ">
+					<f:link.action action="restore" class="neos-button neos-button-warning" title="Restore original values">
+						Restore
+					</f:link.action>
+				</f:if>
+				<f:if condition="{result.cssfile}">
+					<f:form.submit value="Save" class="neos-button neos-button-primary"/>
+				</f:if>
+			</div>
+			<div class="theme-cssvariables__help">
+				<f:if condition="{result.error}">
+					<f:then>
+						<p><i class="fas fa-exclamation-triangle"></i> {result.error}</p>
+					</f:then>
+					<f:else>
+						<p><i class="fas fa-info"></i> Below you find the active variables in your site. If you have made changes to
+							the original values, a restore option will show up next to the save button.</p>
+					</f:else>
+				</f:if>
+			</div>
+		</div>
 
-        <f:if condition="{result.cssfile}">
-            <div class="theme-cssvariables__variables">
-                <f:groupedFor each="{result.cssfile.variables}" as="variablesByType" groupBy="type" groupKey="type">
-                    <f:for each="{settings.types}" as="allowedType">
-                        <f:if condition="{allowedType} == {type}">
-                            <h2>{type -> f:format.case(mode:'capital')} variables</h2>
-                            <div class="theme-cssvariables__variables--type">
-                                <f:for each="{variablesByType}" as="variable">
-                                    <div class="theme-cssvariables__variable">
-                                        <label for="{variable.name}">{variable.simple_name -> f:format.case(mode:'capital')}</label>
-                                        <f:if condition="{variable.type} == 'color'">
-                                            <f:then>
-                                                <f:form.hidden id="{variable.name}" name="variables[{variable.name}]"
-                                                               value="{variable.value}"/>
-                                                <div class="react__placeholder--color-picker" data-color="{variable.value}"
-                                                     data-target="#{variable.name}"></div>
-                                            </f:then>
-                                            <f:else>
-                                                <f:form.textfield id="{variable.name}" name="variables[{variable.name}]"
-                                                                  value="{variable.value}"/>
-                                            </f:else>
-                                        </f:if>
-                                    </div>
-                                </f:for>
-                            </div>
-                        </f:if>
-                    </f:for>
-                </f:groupedFor>
-            </div>
-        </f:if>
-    </f:form>
+		<f:if condition="{result.cssfile}">
+			<div class="theme-cssvariables__variables">
+				<f:groupedFor each="{result.cssfile.variables}" as="variablesByType" groupBy="type" groupKey="type">
+					<f:for each="{settings.types}" as="allowedType">
+						<f:if condition="{allowedType} == {type}">
+							<h2>{type -> f:format.case(mode:'capital')} variables</h2>
+							<div class="theme-cssvariables__variables--type">
+								<f:for each="{variablesByType}" as="variable">
+									<div class="theme-cssvariables__variable">
+										<label for="{variable.name}">{variable.simple_name -> f:format.case(mode:'capital')}</label>
+										<f:if condition="{variable.type} == 'color'">
+											<f:then>
+												<f:form.hidden id="{variable.name}" name="variables[{variable.name}]"
+																			 value="{variable.value}"/>
+												<div class="react__placeholder--color-picker" data-color="{variable.value}"
+														 data-target="#{variable.name}"></div>
+											</f:then>
+											<f:else>
+												<f:form.textfield id="{variable.name}" name="variables[{variable.name}]"
+																					value="{variable.value}"/>
+											</f:else>
+										</f:if>
+										<strong>{variable.packageKey}</strong><i>{variable.fileName}</i>
+									</div>
+								</f:for>
+							</div>
+						</f:if>
+					</f:for>
+				</f:groupedFor>
+			</div>
+		</f:if>
+	</f:form>
 </div>
