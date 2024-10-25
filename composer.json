@@ -5,8 +5,7 @@
     "license": "MIT",
     "require": {
         "neos/flow": "*",
-        "neos/neos": "*",
-        "symfony/finder": "^4.3"
+        "neos/neos": "*"
     },
     "autoload": {
         "psr-4": {
