@@ -44,7 +44,7 @@
   color: #00b5ff;
 }
 .neos.neos-module.neos-module-management-themeCssVariables .theme-cssvariables__help i.fa-exclamation-triangle {
-  color: #ff8700;
+  color: rgb(255, 135, 0);
 }
 .neos.neos-module.neos-module-management-themeCssVariables .theme-cssvariables__variables--type {
   display: grid;
@@ -56,14 +56,20 @@
   display: grid;
   padding: 1rem;
   gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  grid-template-columns: 1fr 1fr;
   background: #000000;
+}
+.neos.neos-module.neos-module-management-themeCssVariables .theme-cssvariables__variables--type > * > * {
+  max-width: 100%;
 }
 .neos.neos-module.neos-module-management-themeCssVariables .theme-cssvariables__variables--type > * label {
   font-weight: bold;
 }
 .neos.neos-module.neos-module-management-themeCssVariables .theme-cssvariables__variables--type > * strong, .neos.neos-module.neos-module-management-themeCssVariables .theme-cssvariables__variables--type > * i {
   font-size: 0.675rem;
+}
+.neos.neos-module.neos-module-management-themeCssVariables .theme-cssvariables__variable--active {
+  background: rgba(0, 157, 255, 0.12);
 }
 .neos.neos-module.neos-module-management-themeCssVariables .theme-cssvariables .react__placeholder--color-picker {
   display: flex;
@@ -81,4 +87,41 @@
 }
 .neos.neos-module.neos-module-management-themeCssVariables .theme-cssvariables .react__placeholder--color-picker .color-picker__new {
   border: 1px solid #0d95e8;
+}
+.neos.neos-module.neos-module-management-themeCssVariables .tabs {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+.neos.neos-module.neos-module-management-themeCssVariables .tabs > label {
+  grid-row: 1;
+  padding: 10px 20px;
+  flex: 1;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.neos.neos-module.neos-module-management-themeCssVariables .tabs .tab-content {
+  grid-row: 2;
+  grid-column: 1/-1;
+  display: none;
+  border-top: none;
+}
+.neos.neos-module.neos-module-management-themeCssVariables .tabs input[type=radio] {
+  display: none;
+  visibility: hidden;
+}
+.neos.neos-module.neos-module-management-themeCssVariables .tabs input[type=radio]:checked + label {
+  font-weight: bold;
+  background-color: #0d95e8;
+  border-bottom: 1px solid #fff;
+}
+.neos.neos-module.neos-module-management-themeCssVariables .tabs input[type=radio]:nth-of-type(1):checked ~ .tab-content:nth-of-type(1),
+.neos.neos-module.neos-module-management-themeCssVariables .tabs input[type=radio]:nth-of-type(2):checked ~ .tab-content:nth-of-type(2),
+.neos.neos-module.neos-module-management-themeCssVariables .tabs input[type=radio]:nth-of-type(3):checked ~ .tab-content:nth-of-type(3),
+.neos.neos-module.neos-module-management-themeCssVariables .tabs input[type=radio]:nth-of-type(4):checked ~ .tab-content:nth-of-type(4),
+.neos.neos-module.neos-module-management-themeCssVariables .tabs input[type=radio]:nth-of-type(5):checked ~ .tab-content:nth-of-type(5),
+.neos.neos-module.neos-module-management-themeCssVariables .tabs input[type=radio]:nth-of-type(6):checked ~ .tab-content:nth-of-type(6) {
+  display: block;
 }

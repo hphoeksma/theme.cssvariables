@@ -32,3 +32,5 @@ Theme:
     excludedPackages:
       - Neos
       - Yoast
+    excludedPaths:
+      -

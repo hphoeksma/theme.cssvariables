@@ -3,7 +3,8 @@
 namespace Theme\CssVariables\Service;
 
 use Neos\Flow\Annotations as Flow;
-use Neos\Utility\Files as Files;
+use Neos\Utility\Exception\FilesException;
+use Neos\Utility\Files;
 
 /**
  * Class WriteCssVariablesService
@@ -19,11 +20,12 @@ class WriteCssVariablesService
     protected $stylesheetName;
 
     /**
-     * @param $variables
-     * @return false|int
-     * @throws \Neos\Utility\Exception\FilesException
+     * @param array $variables
+     * @param string $site
+     * @return bool|int
+     * @throws FilesException
      */
-    public function writeCssVariables($variables)
+    public function writeCssVariables(array $variables, string $site): bool|int
     {
 
         $contents = ':root{' . $this->processVariables($variables) . '}';
@@ -33,15 +35,18 @@ class WriteCssVariablesService
             FLOW_PATH_DATA,
             'Persistent',
             'Theme',
-            'CssVariables'
+            'CssVariables',
+            $site
         ]));
 
         // Store in Data/Persistent
         $persistentPathAndFilename = Files::concatenatePaths([
-            FLOW_PATH_DATA,
+            FLOW_PATH_ROOT,
+            'Data',
             'Persistent',
             'Theme',
             'CssVariables',
+            $site,
             $this->stylesheetName
         ]);
 
@@ -49,12 +54,13 @@ class WriteCssVariablesService
 
         // Create a symlink in Public Resources if it doesn't exist
         $publicPathAndFilename = Files::concatenatePaths([
-            FLOW_PATH_WEB,
+            FLOW_PATH_ROOT,
+            'Web',
             '_Resources',
             'Static',
             'Packages',
             'Theme.CssVariables',
-            $this->stylesheetName
+            $site . '_' . $this->stylesheetName
         ]);
 
         if (!Files::is_link($publicPathAndFilename)) {
@@ -79,9 +85,9 @@ class WriteCssVariablesService
     }
 
     /**
-     *
+     * @param string $site
      */
-    public function cleanCustomCss()
+    public function cleanCustomCss(string $site): void
     {
         // Remove the symlink
         $publicPathAndFilename = Files::concatenatePaths([
@@ -90,7 +96,7 @@ class WriteCssVariablesService
             'Static',
             'Packages',
             'Theme.CssVariables',
-            $this->stylesheetName
+            $site . '_' . $this->stylesheetName
         ]);
 
         Files::unlink($publicPathAndFilename);
@@ -101,6 +107,7 @@ class WriteCssVariablesService
             'Persistent',
             'Theme',
             'CssVariables',
+            $site,
             $this->stylesheetName
         ]);
 

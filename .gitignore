@@ -1,2 +1,3 @@
-/Resources/Public/custom.css
+/Resources/Public/
+!/Resources/Public/main.*
 node_modules
