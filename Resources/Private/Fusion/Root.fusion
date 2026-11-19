@@ -1,12 +1,9 @@
 prototype(Neos.Neos:Page) {
   head {
     cssVariables = Neos.Fusion:Component {
-      uri = Neos.Fusion:ResourceUri {
-        path = ${'resource://Theme.CssVariables/Public/' + Configuration.setting('Theme.CssVariables.stylesheetName')}
-      }
-      renderer = afx`
-        <link rel="stylesheet" href={props.uri}/>`
-      renderer.@if.has = ${File.exists(props.uri)}
+      css = ${CssVariables.customCss(site)}
+      renderer = afx`<style data-theme-cssvariables>{props.css}</style>`
+      renderer.@if.hasCss = ${!String.isBlank(props.css)}
       @position = 'after stylesheets'
     }
   }

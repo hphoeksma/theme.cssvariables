@@ -7,6 +7,7 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Mvc\Controller\ActionController;
 use Neos\Flow\Mvc\Exception\StopActionException;
 use Neos\Flow\Package\PackageManager;
+use Neos\Fusion\Core\Cache\ContentCache;
 use Neos\Neos\Domain\Exception;
 use Neos\Neos\Domain\Model\Site;
 use Neos\Neos\Domain\Repository\SiteRepository;
@@ -45,6 +46,13 @@ class BackendController extends ActionController
      * @Flow\Inject
      */
     protected SiteRepository $siteRepository;
+
+    /**
+     * The variables are rendered inline in the cached page head
+     * @Flow\Inject
+     * @var ContentCache
+     */
+    protected $contentCache;
     /**
      *
      * @throws Exception
@@ -77,6 +85,7 @@ class BackendController extends ActionController
         // Save only if there are changed variables
         if (!empty($changedVariables)) {
             $this->writeCssVariablesService->writeCssVariables($changedVariables, $site);
+            $this->contentCache->flush();
         }
 
         $this->redirect('index');
@@ -89,6 +98,7 @@ class BackendController extends ActionController
     public function restoreAction(Site $site): void
     {
         $this->writeCssVariablesService->cleanCustomCss((string)$site->getNodeName());
+        $this->contentCache->flush();
         $this->redirect('index');
     }
 

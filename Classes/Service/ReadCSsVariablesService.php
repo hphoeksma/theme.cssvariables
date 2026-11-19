@@ -123,8 +123,9 @@ class ReadCSsVariablesService
         $variables = [];
         $content = $file->getContents();
 
-        // Match all standalone custom variables formatted as `--variable-name: value;`
-        preg_match_all('/^\s*--([\w-]+):\s*([^;]+);/m', $content, $matches, PREG_SET_ORDER);
+        // Match custom property declarations `--variable-name: value` at the start of a line or after
+        // `{` / `;`, so minified CSS (and the stored override file) is read as well
+        preg_match_all('/(?:^|[{;])\s*--([\w-]+)\s*:\s*([^;{}]+)(?=[;}])/m', $content, $matches, PREG_SET_ORDER);
 
         foreach ($matches as $match) {
             if (isset($match[1]) && isset($match[2])) {

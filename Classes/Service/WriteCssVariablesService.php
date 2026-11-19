@@ -7,12 +7,15 @@ use Neos\Utility\Exception\FilesException;
 use Neos\Utility\Files;
 
 /**
- * Class WriteCssVariablesService
- * @package Theme\CssVariables\Module\Service
+ * Stores the overridden CSS variables of a site in Data/Persistent.
+ *
+ * The file is rendered inline by Fusion (see CssVariablesHelper), so nothing is
+ * published to Web/_Resources and nothing is written into the package directory.
+ *
+ * @Flow\Scope("singleton")
  */
 class WriteCssVariablesService
 {
-
     /**
      * @Flow\InjectConfiguration("stylesheetName")
      * @var string
@@ -20,97 +23,64 @@ class WriteCssVariablesService
     protected $stylesheetName;
 
     /**
-     * @param array $variables
-     * @param string $site
-     * @return bool|int
+     * @param array<string, string> $variables
      * @throws FilesException
      */
-    public function writeCssVariables(array $variables, string $site): bool|int
+    public function writeCssVariables(array $variables, string $site): bool
     {
-
         $contents = ':root{' . $this->processVariables($variables) . '}';
 
-        // Setup the Directory structure
-        Files::createDirectoryRecursively(Files::concatenatePaths([
-            FLOW_PATH_DATA,
-            'Persistent',
-            'Theme',
-            'CssVariables',
-            $site
-        ]));
-
-        // Store in Data/Persistent
-        $persistentPathAndFilename = Files::concatenatePaths([
-            FLOW_PATH_ROOT,
-            'Data',
-            'Persistent',
-            'Theme',
-            'CssVariables',
-            $site,
-            $this->stylesheetName
-        ]);
-
-        file_put_contents($persistentPathAndFilename, $contents);
-
-        // Create a symlink in Public Resources if it doesn't exist
-        $publicPathAndFilename = Files::concatenatePaths([
-            FLOW_PATH_ROOT,
-            'Web',
-            '_Resources',
-            'Static',
-            'Packages',
-            'Theme.CssVariables',
-            $site . '_' . $this->stylesheetName
-        ]);
-
-        if (!Files::is_link($publicPathAndFilename)) {
-            Files::createRelativeSymlink($persistentPathAndFilename, $publicPathAndFilename);
-        }
+        Files::createDirectoryRecursively($this->getDirectory($site));
+        file_put_contents($this->getPathAndFilename($site), $contents);
 
         return true;
     }
 
     /**
-     * @param array $variables
-     * @return string
+     * @param array<string, string> $variables
      */
-    public function processVariables(array $variables)
+    public function processVariables(array $variables): string
     {
         $processedVariables = [];
         foreach ($variables as $variableName => $variableValue) {
+            $variableName = (string)$variableName;
+            // Only accept custom property names, and keep values from breaking out of the declaration
+            if (!preg_match('/^--[\w-]+$/', $variableName)) {
+                continue;
+            }
+            $variableValue = trim(str_replace(['<', '>', '{', '}', ';'], '', (string)$variableValue));
+            if ($variableValue === '') {
+                continue;
+            }
             $processedVariables[] = $variableName . ':' . $variableValue;
         }
 
         return implode(';', $processedVariables);
     }
 
-    /**
-     * @param string $site
-     */
     public function cleanCustomCss(string $site): void
     {
-        // Remove the symlink
-        $publicPathAndFilename = Files::concatenatePaths([
-            FLOW_PATH_WEB,
-            '_Resources',
-            'Static',
-            'Packages',
-            'Theme.CssVariables',
-            $site . '_' . $this->stylesheetName
+        $pathAndFilename = $this->getPathAndFilename($site);
+        if (is_file($pathAndFilename)) {
+            Files::unlink($pathAndFilename);
+        }
+
+        // Versions up to 0.2.x published a symlink next to the package's public resources
+        $legacyLink = Files::concatenatePaths([
+            FLOW_PATH_WEB, '_Resources', 'Static', 'Packages', 'Theme.CssVariables', $site . '_' . $this->stylesheetName
         ]);
+        if (is_link($legacyLink)) {
+            unlink($legacyLink);
+        }
+    }
 
-        Files::unlink($publicPathAndFilename);
+    public function getPathAndFilename(string $site): string
+    {
+        return Files::concatenatePaths([$this->getDirectory($site), $this->stylesheetName]);
+    }
 
-        // Remove the stored variables
-        $persistentPathAndFilename = Files::concatenatePaths([
-            FLOW_PATH_DATA,
-            'Persistent',
-            'Theme',
-            'CssVariables',
-            $site,
-            $this->stylesheetName
-        ]);
-
-        Files::unlink($persistentPathAndFilename);
+    private function getDirectory(string $site): string
+    {
+        return Files::concatenatePaths([FLOW_PATH_DATA, 'Persistent', 'Theme', 'CssVariables', $site]);
     }
 }

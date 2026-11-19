@@ -17,12 +17,13 @@ Each of those can be enabled via the `Settings.yaml`. (See below).
 ![](Resources/Private/Documentation/Images/Module.png)
 
 ### What happens in the background?
-The module reads all CSS files and extracts all variables declared inside the `:root` selector.
+The module reads all CSS files in the `Resources/Public` folders of your packages (minified or not) and extracts the custom properties (`--name: value`).
 If multiple files are found (for example when using a bootstrap based theme) the array of variables
 get merged where the top level file is considered to be the most relevant one. 
 
-When you change the values a new css file is being created and store inside the `Data/Persistent/Theme/CssVariables` folder.
-It is then symlinked inside the Public resources folder of the Theme.CssVariables package.
+When you change the values, the overrides are stored in `Data/Persistent/Theme/CssVariables/<site>/custom.css`.
+Fusion renders that file inline as a `<style>` tag in the page head, so nothing is published to `Web/_Resources`
+and the overrides survive deployments that share `Data/Persistent`. Saving or restoring flushes the content cache.
 
 It is loaded as well, if it exists, and is merged as last so the module shows the active settings
 for the variables.
@@ -45,8 +46,17 @@ composer require theme/cssvariables
 |  types | `array` | `color` | Supported are: `color`,`font`,`breakpoint`,`other`. Where `other` means every variable we could not sensibly map to one of the others. |
 
 ### Fusion
-Default the newly created CSS-file is placed with `@position = 'after stylesheets'`. 
-If your Neos Page setup is different, make sure the file is loaded after your Site's css files.
+The overrides are rendered as `<style data-theme-cssvariables>` in `Neos.Neos:Page.head.cssVariables`,
+with `@position = 'after stylesheets'`. If your Neos Page setup is different, make sure it is rendered after your site's CSS files.
+
+The Eel helper `CssVariables.customCss(site)` returns the stored CSS, if you want to render it elsewhere.
+
+## Compatibility
+
+| Version | Neos |
+| --- | --- |
+| 0.3.x | 8.3, 8.4, 9.0, 9.1, 9.2 |
+| 0.2.x | not installable on current Neos 8/9 |
 
 ### Access to the module
 Our default policy is set for `Neos Administrators` only. However feel free to copy-paste the 
