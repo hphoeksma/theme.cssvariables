@@ -60,8 +60,11 @@ class ReadCSsVariablesService
 
         /** @var Site $site */
         foreach ($this->siteRepository->findAll() as $site) {
+            // Neos 8 returns a string, Neos 9 a SiteNodeName value object
+            $siteNodeName = (string)$site->getNodeName();
+
             // Load the override values
-            $files = $this->getCustomCssVariables($site->getNodeName());
+            $files = $this->getCustomCssVariables($siteNodeName);
             if ($this->getCssFiles()) {
                 foreach ($this->getCssFiles() as $file) {
                     if (!empty($this->readVariables($file)) && !str_starts_with($file->getRelativePathname(), 'Private')) {
@@ -73,13 +76,13 @@ class ReadCSsVariablesService
                 }
             }
 
-            $result[$site->getNodeName()]['cssfile'] = [];
+            $result[$siteNodeName]['cssfile'] = [];
 
             foreach (array_reverse($files) as $file) {
-                $result[$site->getNodeName()]['cssfile'] = Arrays::arrayMergeRecursiveOverrule($result[$site->getNodeName()]['cssfile'], $file);
+                $result[$siteNodeName]['cssfile'] = Arrays::arrayMergeRecursiveOverrule($result[$siteNodeName]['cssfile'], $file);
             }
 
-            if (empty($result[$site->getNodeName()]['cssfile'])) $result[$site->getNodeName()]['error'] = 'No css variables found';
+            if (empty($result[$siteNodeName]['cssfile'])) $result[$siteNodeName]['error'] = 'No css variables found';
 
         }
 
@@ -258,7 +261,11 @@ class ReadCSsVariablesService
 
         // Manually filter out files from the excluded paths
         $finder->filter(function (\SplFileInfo $file) {
-            foreach ($this->excludedPaths as $excludedPath) {
+            foreach ($this->excludedPaths ?? [] as $excludedPath) {
+                // An empty entry (the default `-` in Settings.yaml) would match every path
+                if (empty($excludedPath)) {
+                    continue;
+                }
                 if (str_contains($file->getRealPath(), $excludedPath)) {
                     return false; // Exclude this file
                 }

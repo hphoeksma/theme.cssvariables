@@ -88,7 +88,7 @@ class BackendController extends ActionController
      */
     public function restoreAction(Site $site): void
     {
-        $this->writeCssVariablesService->cleanCustomCss($site->getNodeName());
+        $this->writeCssVariablesService->cleanCustomCss((string)$site->getNodeName());
         $this->redirect('index');
     }
 
