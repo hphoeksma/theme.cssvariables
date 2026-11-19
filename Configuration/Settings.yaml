@@ -16,6 +16,9 @@ Neos:
     fusion:
       autoInclude:
         Theme.CssVariables: true
+  Fusion:
+    defaultContext:
+      CssVariables: 'Theme\CssVariables\Eel\CssVariablesHelper'
 
 Theme:
   CssVariables:
