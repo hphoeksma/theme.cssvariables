@@ -1,4 +1,4 @@
-import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import React, { useEffect, useState, useRef } from 'react'
 import {SketchPicker} from 'react-color'
 
@@ -65,6 +65,6 @@ window.addEventListener('DOMContentLoaded', () => {
 	document.querySelectorAll('.react__placeholder--color-picker').forEach(el => {
 		const color = el.getAttribute('data-color')
 		const targetId = el.getAttribute('data-target')
-		ReactDOM.render(<ColorPicker color={color} targetId={targetId}/>, el)
+		createRoot(el).render(<ColorPicker color={color} targetId={targetId}/>)
 	})
 })
