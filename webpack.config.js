@@ -3,7 +3,7 @@ const path = require('path');
 const sourceDirectory = 'Resources/Private';
 const targetDirectory = 'Resources/Public';
 
-module.exports = {
+module.exports = (env, argv) => ({
     entry: [
         `./${sourceDirectory}/Scripts/module.js`,
         `./${sourceDirectory}/Styles/module.scss`
@@ -28,14 +28,17 @@ module.exports = {
                 test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
                 use: {
-                    loader: "babel-loader"
+                    loader: "babel-loader",
+                    options: {
+                        // Babel 8's preset-react picks the JSX dev runtime from the Babel env,
+                        // which webpack's --mode does not set. React's production build has no jsxDEV.
+                        envName: argv.mode === 'production' ? 'production' : 'development'
+                    }
                 }
             },
             {
                 test: /\.s[ac]ss$/i,
                 use: [
-                    // Creates `style` nodes from JS strings
-                    'style-loader',
                     {
                         loader: MiniCssExtractPlugin.loader,
                         options: {
@@ -63,4 +66,4 @@ module.exports = {
             },
         ]
     }
-};
+});
